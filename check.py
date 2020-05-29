@@ -10,7 +10,6 @@ from urllib.parse import urlparse
 
 import argparse
 import logging as log
-import select
 from email.message import EmailMessage
 from email.utils import make_msgid
 import mimetypes
@@ -32,6 +31,8 @@ else:
     log.basicConfig(format="[%(levelname)s] %(message)s")
 
 url = args.url
+parsed_url = urlparse(url)
+prefix = (parsed_url.netloc + parsed_url.path).replace('/', '_')
 
 sender = args.sender
 server_url = args.server_url
@@ -79,8 +80,8 @@ def non_max_suppression_slow(boxes, overlap_thresh):
 
 
 def get_diff():
-    before = cv2.imread('screenshots/original.png')
-    after = cv2.imread('screenshots/tmp.png')
+    before = cv2.imread(f'screenshots/{prefix}_original.png')
+    after = cv2.imread(f'screenshots/{prefix}_tmp.png')
 
     # Convert images to grayscale
     before_gray = cv2.cvtColor(before, cv2.COLOR_BGR2GRAY)
@@ -118,7 +119,6 @@ def send_notification():
     print(f"[INFO] {len(recipient_list)} emails need to be sent")
     print("[INFO] Drafting Email...")
     msg = EmailMessage()
-    parsed_url = urlparse(url)
     msg['Subject'] = parsed_url.netloc + " change"
     msg['From'] = f'Anshul Gupta <{sender}>'
     msg['Bcc'] = ', '.join(recipient_list)
@@ -154,19 +154,19 @@ while child.poll() is None:
     if txt:
         log.info(txt)
 
-os.replace(glob('screenshots/http*.png')[0], 'screenshots/tmp.png')
+os.replace(glob('screenshots/http*.png')[0], f'screenshots/{prefix}_tmp.png')
 log.info("Screenshots Taken")
 
 log.info("Finding Differences...")
 similarity, out = get_diff()
 if similarity == 1:
     log.info("\n[INFO] No Differences Found")
-    os.remove('screenshots/tmp.png')
+    os.remove(f'screenshots/{prefix}_tmp.png')
     exit()
 
 log.info("Saving Image...")
 out = cv2.resize(out, (0, 0), fx=0.75, fy=0.75)
-cv2.imwrite('screenshots/compare.png', out)
+cv2.imwrite(f'screenshots/{prefix}_compare.png', out)
 # cv2.imshow('output', out)
 # cv2.waitKey(0)
 
@@ -175,7 +175,7 @@ send_notification()
 log.info("Notifications Sent")
 
 log.info("Rewriting original.png...")
-os.replace('screenshots/tmp.png', 'screenshots/original.png')
+os.replace(f'screenshots/{prefix}_tmp.png', f'screenshots/{prefix}_original.png')
 
 log.info("Cleaning up...")
-os.remove('screenshots/compare.png')
+os.remove(f'screenshots/{prefix}_compare.png')
