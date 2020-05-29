@@ -1,5 +1,7 @@
 import os
 import subprocess
+import sys
+
 import cv2
 from skimage.measure import compare_ssim
 from glob import glob
@@ -148,7 +150,7 @@ def send_notification():
 log.info("Getting Screenshots...")
 child = subprocess.Popen(["webscreenshot", url, '-v'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 while child.poll() is None:
-    txt = child.stdout.readline()
+    txt = child.stdout.readline().replace(b'\r\n', b'').decode(sys.stdout.encoding)
     if txt:
         log.info(txt)
 
