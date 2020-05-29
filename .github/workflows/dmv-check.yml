@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -24,6 +24,19 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+
     - name: Check Site
       run: |
         python check.py -v https://www.dmv.ca.gov/portal/dmv/dmv/appointments {{ secrets.SENDER }} {{ secrets.PASSWORD }} {{ secrets.RECIPIENTS }}
+
+    - name: Commit Original
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "Github Action"
+        git add screenshots
+        git commit -m "Changes" || echo "No changes to commit"
+
+    - name: Push to Repo
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
