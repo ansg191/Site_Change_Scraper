@@ -1,9 +1,13 @@
 import subprocess
 from glob import glob
 import os
+import argparse
 
-# url = "https://www.dmv.ca.gov/portal/dmv/dmv/appointments"
-url = '127.0.0.1'
+parser = argparse.ArgumentParser()
+parser.add_argument('url', type=str, help='url to check')
+args = parser.parse_args()
+
+url = args.url
 
 print("[INFO] Getting Screenshots...")
 subprocess.run(["webscreenshot", url, '-v'])

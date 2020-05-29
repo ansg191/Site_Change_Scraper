@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 import argparse
 import logging as log
+import select
 from email.message import EmailMessage
 from email.utils import make_msgid
 import mimetypes
@@ -20,7 +21,7 @@ parser.add_argument('password', type=str, help='email password')
 parser.add_argument('recipients', type=str, nargs='+', help='Recipient List')
 parser.add_argument('--server-url', type=str, default='smtp.mail.yahoo.com')
 parser.add_argument('--port', type=int, default=465)
-parser.add_argument('-v', '--verbose', type=bool, default=True)
+parser.add_argument('-v', '--verbose', action='store_true')
 args = parser.parse_args()
 
 if args.verbose:
@@ -84,7 +85,7 @@ def get_diff():
     after_gray = cv2.cvtColor(after, cv2.COLOR_BGR2GRAY)
 
     (score, diff) = compare_ssim(before_gray, after_gray, full=True)
-    print("Image similarity", score)
+    log.info(f"Image similarity: {score}")
 
     diff = (diff * 255).astype("uint8")
 
@@ -144,30 +145,35 @@ def send_notification():
     server.quit()
 
 
-print("[INFO] Getting Screenshots...")
-subprocess.run(["webscreenshot", url, '-v'])
-os.replace(glob('screenshots/http*.png')[0], 'screenshots/tmp.png')
-print("[INFO] Screenshots Taken")
+log.info("Getting Screenshots...")
+child = subprocess.Popen(["webscreenshot", url, '-v'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+while child.poll() is None:
+    txt = child.stdout.readline()
+    if txt:
+        log.info(txt)
 
-print("[INFO] Finding Differences...")
+os.replace(glob('screenshots/http*.png')[0], 'screenshots/tmp.png')
+log.info("Screenshots Taken")
+
+log.info("Finding Differences...")
 similarity, out = get_diff()
 if similarity == 1:
-    print("\n[INFO] No Differences Found")
+    log.info("\n[INFO] No Differences Found")
     os.remove('screenshots/tmp.png')
     exit()
 
-print("[INFO] Saving Image...")
+log.info("Saving Image...")
 out = cv2.resize(out, (0, 0), fx=0.75, fy=0.75)
 cv2.imwrite('screenshots/compare.png', out)
 # cv2.imshow('output', out)
 # cv2.waitKey(0)
 
-print("[INFO] Sending Notifications...")
+log.info("Sending Notifications...")
 send_notification()
-print("[INFO] Notifications Sent")
+log.info("Notifications Sent")
 
-print("[INFO] Rewriting original.png...")
+log.info("Rewriting original.png...")
 os.replace('screenshots/tmp.png', 'screenshots/original.png')
 
-print("[INFO] Cleaning up...")
+log.info("Cleaning up...")
 os.remove('screenshots/compare.png')
