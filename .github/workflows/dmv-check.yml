@@ -27,6 +27,7 @@ jobs:
 
     - name: Check Site
       run: |
+        cmd
         where python
         python check.py -v https://www.dmv.ca.gov/portal/dmv/dmv/appointments {{ secrets.SENDER }} {{ secrets.PASSWORD }} {{ secrets.RECIPIENTS }}
 
