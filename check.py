@@ -1,19 +1,20 @@
-import os
-import subprocess
-import sys
-
-import cv2
-from skimage.measure import compare_ssim
-from glob import glob
-import numpy as np
-from urllib.parse import urlparse
-
 import argparse
 import logging as log
+import mimetypes
+import os
+import smtplib
+import subprocess
+import sys
+from datetime import datetime
 from email.message import EmailMessage
 from email.utils import make_msgid
-import mimetypes
-import smtplib
+from glob import glob
+from urllib.parse import urlparse
+
+import cv2
+import numpy as np
+import pytz
+from skimage.measure import compare_ssim
 
 parser = argparse.ArgumentParser()
 parser.add_argument('url', type=str, help='url to check')
@@ -23,6 +24,8 @@ parser.add_argument('recipients', type=str, nargs='+', help='Recipient List')
 parser.add_argument('--server-url', type=str, default='smtp.mail.yahoo.com')
 parser.add_argument('--port', type=int, default=465)
 parser.add_argument('-v', '--verbose', action='store_true')
+parser.add_argument('-l', '--log', type=str, default='log.txt')
+parser.add_argument('--time-zone', type=str, default='America/Los_Angeles')
 args = parser.parse_args()
 
 if args.verbose:
@@ -39,6 +42,8 @@ server_url = args.server_url
 port = args.port
 password = args.password
 recipient_list = args.recipients
+
+tz = pytz.timezone(args.time_zone)
 
 
 def non_max_suppression_slow(boxes, overlap_thresh):
@@ -162,6 +167,8 @@ similarity, out = get_diff()
 if similarity == 1:
     log.info("\n[INFO] No Differences Found")
     os.remove(f'screenshots/{prefix}_tmp.png')
+    with open(args.log, 'a') as log_file:
+        log_file.write(f"Checked on {datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')}: No differences found")
     exit()
 
 log.info("Saving Image...")
@@ -179,3 +186,6 @@ os.replace(f'screenshots/{prefix}_tmp.png', f'screenshots/{prefix}_original.png'
 
 log.info("Cleaning up...")
 os.remove(f'screenshots/{prefix}_compare.png')
+with open(args.log, 'a') as log_file:
+    log_file.write(
+        f"Checked on {datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')}: Differences found, Notifications sent")
