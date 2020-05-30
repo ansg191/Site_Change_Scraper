@@ -27,7 +27,6 @@ jobs:
 
     - name: Check Site
       run: |
-        where python
         cmd.exe /c "python check.py -v https://www.dmv.ca.gov/portal/dmv/dmv/appointments {{ secrets.SENDER }} {{ secrets.PASSWORD }} {{ secrets.RECIPIENTS }}"
 
     - name: Commit Original
