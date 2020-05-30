@@ -29,7 +29,7 @@ jobs:
       run: |
         cmd
         where python
-        python check.py -v https://www.dmv.ca.gov/portal/dmv/dmv/appointments {{ secrets.SENDER }} {{ secrets.PASSWORD }} {{ secrets.RECIPIENTS }}
+        check.py -v https://www.dmv.ca.gov/portal/dmv/dmv/appointments {{ secrets.SENDER }} {{ secrets.PASSWORD }} {{ secrets.RECIPIENTS }}
 
     - name: Commit Original
       run: |
