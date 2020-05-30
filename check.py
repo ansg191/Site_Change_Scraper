@@ -168,7 +168,7 @@ if similarity == 1:
     log.info("\n[INFO] No Differences Found")
     os.remove(f'screenshots/{prefix}_tmp.png')
     with open(args.log, 'a') as log_file:
-        log_file.write(f"Checked on {datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')}: No differences found")
+        log_file.write(f"Checked on {datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')}: No differences found\n")
     exit()
 
 log.info("Saving Image...")
@@ -188,4 +188,4 @@ log.info("Cleaning up...")
 os.remove(f'screenshots/{prefix}_compare.png')
 with open(args.log, 'a') as log_file:
     log_file.write(
-        f"Checked on {datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')}: Differences found, Notifications sent")
+        f"Checked on {datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')}: Differences found, Notifications sent\n")
