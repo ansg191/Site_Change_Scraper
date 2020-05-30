@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -27,6 +27,7 @@ jobs:
 
     - name: Check Site
       run: |
+        where python
         python check.py -v https://www.dmv.ca.gov/portal/dmv/dmv/appointments {{ secrets.SENDER }} {{ secrets.PASSWORD }} {{ secrets.RECIPIENTS }}
 
     - name: Commit Original
