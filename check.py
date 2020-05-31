@@ -169,7 +169,7 @@ if similarity == 1:
     log.info("\n[INFO] No Differences Found")
     os.remove(f'screenshots/{prefix}_tmp.png')
     with open(args.log, 'a') as log_file:
-        log_file.write(f"Checked on {time}: No differences found\n")
+        log_file.write(f"Checked {prefix.replace('_', '/')} on {time}: No differences found\n")
     exit()
 
 log.info("Saving Image...")
@@ -188,4 +188,4 @@ os.replace(f'screenshots/{prefix}_tmp.png', f'screenshots/{prefix}_original.png'
 log.info("Cleaning up...")
 os.remove(f'screenshots/{prefix}_compare.png')
 with open(args.log, 'a') as log_file:
-    log_file.write(f"Checked on {time}: Differences found, Notifications sent\n")
+    log_file.write(f"Checked {prefix.replace('_', '/')} on {time}: Differences found, Notifications sent\n")
