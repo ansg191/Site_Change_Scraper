@@ -6,8 +6,8 @@ name: Check DMV
 on:
   push:
     branches: [ master ]
-  schedule:
-    - cron: '*/30 * * * *'
+#  schedule:
+#    - cron: '*/30 * * * *'
 
 jobs:
   build:
