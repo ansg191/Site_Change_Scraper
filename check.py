@@ -165,6 +165,12 @@ if response.status_code == 200:
     with open(f'screenshots/{prefix}_tmp.png', 'wb') as file:
         for chunk in response:
             file.write(chunk)
+else:
+    log.error(f'Server returned: {response.status_code}')
+    with open(args.log, 'a') as log_file:
+        log_file.write(f"Failed to check {prefix.replace('_', '/')} on {time}: Server returned "
+                       f"{response.status_code}\n")
+    exit()
 
 log.info("Screenshots Taken")
 
