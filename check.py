@@ -3,17 +3,15 @@ import logging as log
 import mimetypes
 import os
 import smtplib
-import subprocess
-import sys
 from datetime import datetime
 from email.message import EmailMessage
 from email.utils import make_msgid
-from glob import glob
 from urllib.parse import urlparse
 
 import cv2
 import numpy as np
 import pytz
+import requests
 from skimage.measure import compare_ssim
 
 parser = argparse.ArgumentParser()
@@ -154,13 +152,20 @@ def send_notification():
 
 
 log.info("Getting Screenshots...")
-child = subprocess.Popen(["webscreenshot", url, '-v'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-while child.poll() is None:
-    txt = child.stdout.readline().replace(b'\r\n', b'').decode(sys.stdout.encoding)
-    if txt:
-        log.info(txt)
+# child = subprocess.Popen(["webscreenshot", url, '-v'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+# while child.poll() is None:
+#     txt = child.stdout.readline().replace(b'\r\n', b'').decode(sys.stdout.encoding)
+#     if txt:
+#         log.info(txt)
+#
+# os.replace(glob('screenshots/http*.png')[0], f'screenshots/{prefix}_tmp.png')
+response = requests.get("https://render-tron.appspot.com/screenshot/" + url, stream=True)
 
-os.replace(glob('screenshots/http*.png')[0], f'screenshots/{prefix}_tmp.png')
+if response.status_code == 200:
+    with open(f'screenshots/{prefix}_tmp.png', 'wb') as file:
+        for chunk in response:
+            file.write(chunk)
+
 log.info("Screenshots Taken")
 
 log.info("Finding Differences...")
