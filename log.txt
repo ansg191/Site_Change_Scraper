@@ -13,3 +13,4 @@ Checked www.dmv.ca.gov/portal/dmv/dmv/appointments on 2020-06-19 05:10: No diffe
 Checked www.dmv.ca.gov/portal/dmv/dmv/appointments on 2020-06-19 11:08: No differences found
 Checked www.dmv.ca.gov/portal/dmv/dmv/appointments on 2020-06-19 17:20: No differences found
 Checked www.dmv.ca.gov/portal/dmv/dmv/appointments on 2020-06-19 23:09: No differences found
+Failed to check www.dmv.ca.gov/portal/dmv/dmv/appointments on 2020-06-20 05:10: Server returned 500
