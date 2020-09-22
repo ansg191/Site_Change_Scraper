@@ -130,3 +130,4 @@ Failed to check www.dmv.ca.gov/portal/dmv/dmv/appointments on 2020-09-17 11:14: 
 Failed to check www.dmv.ca.gov/portal/dmv/dmv/appointments on 2020-09-18 11:14: Server returned 500
 Failed to check www.dmv.ca.gov/portal/dmv/dmv/appointments on 2020-09-20 23:15: Server returned 500
 Failed to check www.dmv.ca.gov/portal/dmv/dmv/appointments on 2020-09-21 11:15: Server returned 500
+Failed to check www.dmv.ca.gov/portal/dmv/dmv/appointments on 2020-09-22 11:15: Server returned 500
